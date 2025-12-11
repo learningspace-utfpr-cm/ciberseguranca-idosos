@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Simulação de Golpes</title>
+<style>
+    body {
+        background: #ece5dd;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        margin: 0;
+        height: 100vh;
+        box-sizing: border-box;
+    }
+    .phone, .sms-container, .facebook-container, .result-container {
+        width: 360px;
+        height: 640px;
+        background: #fff;
+        border-radius: 25px;
+        border: 8px solid #333;
+        overflow: hidden;
+        display: none;
+        flex-direction: column;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    .header {
+        background: #075E54;
+        color: white;
+        padding: 15px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .chat, .sms-box, .fb-box, .result-content {
+        flex: 1;
+        background: #e5ddd5;
+        padding: 15px;
+        overflow-y: auto;
+    }
+    .msg {
+        max-width: 80%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        font-size: 16px;
+        line-height: 1.3;
+        word-wrap: break-word;
+    }
+    .received {
+        background: white;
+        margin-right: auto;
+    }
+    .sent {
+        background: #dcf8c6;
+        margin-left: auto;
+        text-align: right;
+    }
+    .buttons {
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    .btn {
+        flex: 1;
+        padding: 12px;
+        background: #128C7E;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    .nextPhase {
+        display: none;
+        background: #ff9800;
+        margin: 10px;
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 10px;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* Gmail */
+    .gmail-container { 
+        display:none; 
+        flex-direction:column; 
+        font-family:Arial; 
+        width: 360px;
+        height: 640px;
+        border-radius: 25px;
+        border: 8px solid #333;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    .gmail-header { 
+        background:#d44638; 
+        color:white; 
+        padding:15px; 
+        text-align:center; 
+        font-weight:bold; 
+        font-size:20px; 
+    }
+    .gmail-content { 
+        flex:1; 
+        background:#f5f5f5; 
+        padding:15px; 
+        overflow-y:auto; 
+    }
+    .gmail-email {
+        background: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Facebook Mobile */
+    .facebook-container { 
+        display:none; 
+        flex-direction:column; 
+        font-family:Arial; 
+        width: 360px;
+        height: 640px;
+        border-radius: 25px;
+        border: 8px solid #333;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    .fb-header { 
+        background:#4267B2; 
+        color:white; 
+        padding:15px; 
+        text-align:center; 
+        font-weight:bold; 
+        font-size:20px; 
+    }
+    .fb-box { 
+        flex:1; 
+        background:#f0f2f5; 
+        padding:10px; 
+        overflow-y:auto; 
+    }
+    .fb-post { 
+        background:white; 
+        padding:10px; 
+        margin-bottom:10px; 
+        border-radius:8px; 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .fb-post button {
+        background:#1877f2; 
+        color:#fff; 
+        border:none; 
+        border-radius:6px; 
+        padding: 8px 15px; 
+        cursor:pointer;
+        font-weight: 600;
+    }
+
+    /* SMS Android Moderno */
+    .sms-container { 
+        display:none; 
+        flex-direction:column; 
+        font-family:'Roboto', Arial, sans-serif; 
+        width: 360px;
+        height: 640px;
+        border-radius: 25px;
+        border: 8px solid #333;
+        box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+    .sms-header { 
+        background:#1a73e8; 
+        color:white; 
+        padding:12px 16px; 
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .sms-header i {
+        font-size: 20px;
+    }
+    .sms-header div {
+        flex: 1;
+        font-weight: 500;
+        font-size: 16px;
+    }
+    .sms-box { 
+        flex:1; 
+        overflow-y:auto; 
+        background:linear-gradient(180deg, #e5f2ff 0%, #ffffff 100%); 
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .sms-date {
+        text-align: center;
+        color: #5f6368;
+        font-size: 13px;
+        margin: 8px 0;
+        padding: 4px 12px;
+        background: rgba(0,0,0,0.05);
+        border-radius: 12px;
+        align-self: center;
+    }
+    .sms-message {
+        max-width: 75%;
+        margin: 4px 16px;
+        padding: 12px;
+        border-radius: 18px;
+        font-size: 15px;
+        line-height: 1.4;
+        position: relative;
+    }
+    .sms-received {
+        background: #ffffff;
+        align-self: flex-start;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .sms-sent {
+        background: #dcf8c6;
+        align-self: flex-end;
+        border-bottom-right-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .sms-time {
+        font-size: 11px;
+        color: #70757a;
+        text-align: right;
+        margin-top: 4px;
+    }
+
+    /* Resultado Screen */
+    .result-container .header {
+        background: #4CAF50;
+    }
+    .result-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .stat-box {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #1a73e8;
+    }
+    .stat-label {
+        font-size: 14px;
+        color: #5f6368;
+        margin-top: 5px;
+    }
+    .score-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: conic-gradient(#4CAF50 0% 70%, #ff9800 70% 85%, #f44336 85% 100%);
+        margin: 20px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .score-inner {
+        width: 90px;
+        height: 90px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .score-main {
+        font-size: 28px;
+        font-weight: bold;
+        color: #1a73e8;
+    }
+    .score-total {
+        font-size: 14px;
+        color: #5f6368;
+    }
+
+    /* Botões de escolha */
+    .choice-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-top: 1px solid #e0e0e0;
+    }
+    .btn-golpe {
+        flex: 1;
+        padding: 12px;
+        background: #f44336;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .btn-verdadeiro {
+        flex: 1;
+        padding: 12px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .feedback {
+        text-align: center;
+        padding: 10px;
+        font-weight: bold;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px;
+        border-radius: 8px;
+    }
+    .feedback.correct {
+        background: #e8f5e9;
+        color: #2e7d32;
+        border: 1px solid #c8e6c9;
+    }
+    .feedback.wrong {
+        background: #ffebee;
+        color: #c62828;
+        border: 1px solid #ffcdd2;
+    }
+    
+    /* Progresso */
+    .progress-container {
+        padding: 10px 15px;
+        background: #f5f5f5;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 14px;
+        color: #5f6368;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+
+<!-- FASE 1 — WhatsApp -->
+<div class="phone" id="fase1">
+    <div class="header">WhatsApp</div>
+    <div class="progress-container" id="progressF1"></div>
+    <div class="chat" id="chatBox"></div>
+    <div class="choice-buttons">
+        <button class="btn-golpe" onclick="verificarResposta(true)">É Golpe</button>
+        <button class="btn-verdadeiro" onclick="verificarResposta(false)">É Verdadeiro</button>
+    </div>
+    <div id="feedbackWhatsapp" class="feedback"></div>
+    <button class="nextPhase" id="btnNextF1">➡ Próxima Fase</button>
+</div>
+
+<!-- FASE 2 — Gmail Mobile -->
+<div class="gmail-container" id="fase2">
+    <div class="gmail-header">Gmail</div>
+    <div class="progress-container" id="progressF2"></div>
+    <div class="gmail-content" id="gmailBox"></div>
+    <div class="choice-buttons">
+        <button class="btn-golpe" onclick="verificarEmail(true)">É Golpe</button>
+        <button class="btn-verdadeiro" onclick="verificarEmail(false)">É Verdadeiro</button>
+    </div>
+    <div id="feedbackEmail" class="feedback"></div>
+    <button class="nextPhase" id="btnNextF2">➡ Próxima Fase</button>
+</div>
+
+<!-- FASE 3 — Facebook Mobile -->
+<div class="facebook-container" id="fase3">
+    <div class="fb-header">Facebook</div>
+    <div class="progress-container" id="progressF3"></div>
+    <div class="fb-box" id="fbBox"></div>
+    <div class="choice-buttons">
+        <button class="btn-golpe" onclick="verificarFB(true)">É Golpe</button>
+        <button class="btn-verdadeiro" onclick="verificarFB(false)">É Verdadeiro</button>
+    </div>
+    <div id="feedbackFB" class="feedback"></div>
+    <button class="nextPhase" id="btnNextF3">➡ Próxima Fase</button>
+</div>
+
+<!-- FASE 4 — SMS Android -->
+<div class="sms-container" id="fase4">
+    <div class="sms-header">
+        <div>💬</div>
+        <div>Mensagens</div>
+        <div style="font-size: 14px; opacity: 0.9;">(11) 98765-4321</div>
+    </div>
+    <div class="progress-container" id="progressF4"></div>
+    <div class="sms-box" id="smsBox"></div>
+    <div class="choice-buttons">
+        <button class="btn-golpe" onclick="verificarSMS(true)">É Golpe</button>
+        <button class="btn-verdadeiro" onclick="verificarSMS(false)">É Verdadeiro</button>
+    </div>
+    <div id="feedbackSMS" class="feedback"></div>
+    <button class="nextPhase" id="btnNextF4">➡ Ver Resultados</button>
+</div>
+
+<!-- TELA DE RESULTADOS FINAL -->
+<div class="result-container" id="resultFinal">
+    <div class="header">Resultados Finais</div>
+    <div class="result-content" id="resultContent"></div>
+    <div class="choice-buttons">
+        <button class="btn-verdadeiro" onclick="reiniciarJogo()" style="background: #ff9800;">Jogar Novamente</button>
+    </div>
+</div>
+
+<script>
+// -------------------- VARIÁVEIS GLOBAIS --------------------
+let fase1Acertos = 0;
+let fase2Acertos = 0;
+let fase3Acertos = 0;
+let fase4Acertos = 0;
+
+// -------------------- FUNÇÕES UTILITÁRIAS --------------------
+function atualizarProgresso(fase, atual, total) {
+    const elemento = document.getElementById(`progressF${fase}`);
+    if (elemento) {
+        elemento.textContent = `Pergunta ${atual} de ${total}`;
+    }
+}
+
+// -------------------- FASE 1: WhatsApp (20 opções, 5 sorteadas) --------------------
+const mensagensWhatsApp = [
+    // GOLPES (12 opções)
+    { 
+        texto: "Oi vó, é meu novo número. Preciso de dinheiro urgente para pagar o remédio! Pode transferir para esta conta: Banco 123, Ag 4567-8, CC 98765-4", 
+        golpe: true, 
+        explicacao: "Golpistas fingem ser familiares pedindo dinheiro urgente. Nunca transfira sem confirmar por outro meio."
+    },
+    { 
+        texto: "ALERTA BANCO CENTRAL: Seu CPF foi usado em operações suspeitas. Para evitar bloqueio, atualize seus dados em: cpf-regularizacao-online.com", 
+        golpe: true, 
+        explicacao: "O Banco Central nunca envia mensagens por WhatsApp. Sites com domínios .com para serviços governamentais são falsos."
+    },
+    { 
+        texto: "Parabéns! Você foi sorteado na promoção do iPhone 15! Clique para resgatar: premiacao-apple-2024.net", 
+        golpe: true, 
+        explicacao: "Promoções falsas de prêmios são comuns. Empresas sérias usam canais oficiais e domínios próprios."
+    },
+    { 
+        texto: "Mensagem automática: Sua fatura de R$ 1.234,56 vence amanhã. Para evitar bloqueio, pague em: pagamento-expresso.site", 
+        golpe: true, 
+        explicacao: "Bancos não enviam links de pagamento por WhatsApp. Sempre verifique no app oficial do banco."
+    },
+    { 
+        texto: "URGENTE: Seu número será bloqueado em 2 horas! Para evitar, atualize seus dados em: whatsapp-verificacao.online", 
+        golpe: true, 
+        explicacao: "WhatsApp nunca bloqueia números pedindo atualização de dados. É golpe para coletar informações."
+    },
+    { 
+        texto: "Olá, somos da Receita Federal. Seu CPF tem débitos de R$ 2.850,00. Evite bloqueio pagando em: receita-pagamento.com", 
+        golpe: true, 
+        explicacao: "Receita Federal não cobra por WhatsApp. Domínios .com para serviços governamentais são falsos."
+    },
+    { 
+        texto: "Promoção especial: TV Samsung 55\" por apenas R$ 799! Últimas unidades: eletro-ofertas.shop", 
+        golpe: true, 
+        explicacao: "Preço irrealista para produto de marca. Sites .shop são comuns em golpes."
+    },
+    { 
+        texto: "Alerta de segurança: Sua conta do Google foi hackeada. Recupere em: google-recuperacao.online", 
+        golpe: true, 
+        explicacao: "Google nunca envia links de recuperação por WhatsApp. Sites .online suspeitos."
+    },
+    { 
+        texto: "Você tem um PIX de R$ 850,00 não recebido. Acesse para resgatar: pix-caixa.com.br", 
+        golpe: true, 
+        explicacao: "Bancos não enviam links para receber PIX. Domínios que imitam bancos são golpes."
+    },
+    { 
+        texto: "Sua netflix será cancelada. Para manter, atualize o pagamento: netflix-atualizacao.com", 
+        golpe: true, 
+        explicacao: "Netflix usa apenas netflix.com. Domínios diferentes são falsos."
+    },
+    { 
+        texto: "Investimento garantido: 5% ao dia! Cadastre-se: investimento-rapido.biz", 
+        golpe: true, 
+        explicacao: "Promessas de retorno impossível. Domínios .biz suspeitos para investimentos."
+    },
+    { 
+        texto: "Oi tio, tô preso na delegacia, preciso de R$ 3.000 para fiança. O advogado disse que é urgente!", 
+        golpe: true, 
+        explicacao: "Golpe do falso sequestro/fiança. Sempre confirme com a pessoa por outro meio."
+    },
+    
+    // VERDADEIROS (8 opções)
+    { 
+        texto: "Oi mãe, tô chegando aí em 20 minutos. Pode preparar o almoço? 😊", 
+        golpe: false, 
+        explicacao: "Mensagem normal de familiar, sem pedidos estranhos ou links suspeitos."
+    },
+    { 
+        texto: "Lembrete: Sua consulta com Dr. Silva está marcada para amanhã às 14h na Clínica Saúde Total. Chegar com 15min de antecedência.", 
+        golpe: false, 
+        explicacao: "Lembrete legítimo de compromisso médico com informações específicas."
+    },
+    { 
+        texto: "Olá, seu pedido #ORD123456 foi enviado. Código de rastreio: AB123456789BR. Acompanhe em: correios.com.br", 
+        golpe: false, 
+        explicacao: "Mensagem de confirmação de entrega com link para site oficial dos Correios."
+    },
+    { 
+        texto: "Seu exame de sangue está pronto para retirada no Laboratório Diagnóstico. Horário: 8h às 18h. Levar documento com foto.", 
+        golpe: false, 
+        explicacao: "Informação legítima de serviço de saúde sem pedidos suspeitos."
+    },
+    { 
+        texto: "Confirmação: Sua reserva no Restaurante Sabor & Arte para hoje às 20h foi confirmada. Chegar com 10min de antecedência.", 
+        golpe: false, 
+        explicacao: "Confirmação legítima de reserva em restaurante."
+    },
+    { 
+        texto: "Sua matrícula na Academia Fit foi realizada com sucesso. Aulas começam segunda-feira às 7h.", 
+        golpe: false, 
+        explicacao: "Confirmação de matrícula legítima sem links suspeitos."
+    },
+    { 
+        texto: "Olá, lembrete da reunião de condomínio amanhã às 19h no salão de festas. Pauta: reforma do elevador.", 
+        golpe: false, 
+        explicacao: "Lembrete de reunião comunitária legítimo."
+    },
+    { 
+        texto: "Sua encomenda chegou na portaria. Pode retirar até às 22h. Assinatura necessária.", 
+        golpe: false, 
+        explicacao: "Aviso de entrega legítimo sem links para clicar."
+    },
+    { 
+        texto: "Confirmado: seu agendamento na Autoescola Veloz para aula prática às 9h de amanhã.", 
+        golpe: false, 
+        explicacao: "Confirmação de agendamento legítima."
+    },
+    { 
+        texto: "Aviso: Manutenção programada do sistema bancário amanhã das 2h às 4h. Serviços online podem ficar indisponíveis.", 
+        golpe: false, 
+        explicacao: "Aviso oficial de manutenção sem pedidos de dados."
+    }
+];
+
+let mensagens = [];
+let whatsappIndex = 0;
+const TOTAL_PERGUNTAS_F1 = 5;
+
+function iniciarWhatsApp() {
+    // Seleciona 5 mensagens aleatórias das 20 disponíveis
+    mensagens = [...mensagensWhatsApp].sort(() => Math.random() - 0.5).slice(0, TOTAL_PERGUNTAS_F1);
+    whatsappIndex = 0;
+    fase1Acertos = 0;
+    mostrarMensagemWhatsApp();
+}
+
+function mostrarMensagemWhatsApp() {
+    if (whatsappIndex >= mensagens.length) {
+        document.getElementById('btnNextF1').style.display = 'block';
+        return;
+    }
+    
+    const msg = mensagens[whatsappIndex];
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = '';
+    
+    // Data atual
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'sms-date';
+    dateDiv.textContent = 'Hoje';
+    chatBox.appendChild(dateDiv);
+    
+    // Mensagem recebida
+    const bubble = document.createElement("div");
+    bubble.className = "sms-message sms-received";
+    bubble.innerHTML = `
+        <div>${msg.texto}</div>
+        <div class="sms-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+    `;
+    chatBox.appendChild(bubble);
+    
+    chatBox.scrollTop = chatBox.scrollHeight;
+    document.getElementById('feedbackWhatsapp').textContent = '';
+    document.getElementById('feedbackWhatsapp').className = 'feedback';
+    
+    // Atualiza progresso
+    atualizarProgresso(1, whatsappIndex + 1, TOTAL_PERGUNTAS_F1);
+}
+
+function verificarResposta(escolha) {
+    const msg = mensagens[whatsappIndex];
+    const feedback = document.getElementById('feedbackWhatsapp');
+    const chatBox = document.getElementById("chatBox");
+    
+    // Mostra resposta do usuário
+    const respostaBubble = document.createElement("div");
+    respostaBubble.className = "sms-message sms-sent";
+    respostaBubble.innerHTML = `
+        <div>${escolha ? "⚠️ É Golpe" : "✅ É Verdadeiro"}</div>
+        <div class="sms-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+    `;
+    chatBox.appendChild(respostaBubble);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
+    if (escolha === msg.golpe) {
+        feedback.textContent = "✔ Correto! " + msg.explicacao;
+        feedback.className = "feedback correct";
+        fase1Acertos++;
+    } else {
+        feedback.textContent = "✘ Incorreto! " + msg.explicacao;
+        feedback.className = "feedback wrong";
+    }
+    
+    whatsappIndex++;
+    
+    if (whatsappIndex < mensagens.length) {
+        setTimeout(mostrarMensagemWhatsApp, 2000);
+    } else {
+        setTimeout(() => {
+            document.getElementById('btnNextF1').style.display = 'block';
+        }, 2000);
+    }
+}
+
+document.getElementById('btnNextF1').onclick = () => {
+    document.getElementById("fase1").style.display = "none";
+    document.getElementById("fase2").style.display = "flex";
+    iniciarGmail();
+};
+
+// -------------------- FASE 2: Gmail (15 opções, 5 sorteadas) --------------------
+const emailsGmail = [
+    // GOLPES (8 opções)
+    {
+        assunto: "URGENTE: Sua conta será suspensa em 24h",
+        remetente: "atualizacao@seguranca-bancodobrasil.com",
+        corpo: "Detectamos atividade suspeita na sua conta. Para evitar suspensão, atualize seus dados cadastrais clicando aqui. Esta é a última notificação antes do bloqueio permanente.",
+        data: "Hoje, 09:15",
+        golpe: true,
+        explicacao: "Email de golpe: domínio suspeito (não é bB.com.br), linguagem alarmista e pedido para clicar em link."
+    },
+    {
+        assunto: "🎁 Você Ganhou um Vale-Compras de R$ 500!",
+        remetente: "promocoes@americanas-ofertas.net",
+        corpo: "Parabéns! Você foi selecionado para receber um vale-compras exclusivo. Clique para resgatar seu prêmio em até 48 horas. Oferta válida apenas para os primeiros 100 resgates.",
+        data: "Hoje, 11:22",
+        golpe: true,
+        explicacao: "Email de golpe: domínio .net (não oficial da Americanas), promessa irreal de prêmio e urgência artificial."
+    },
+    {
+        assunto: "🚨 ALERTA: Fraude detectada na sua conta PayPal",
+        remetente: "security@paypal-verificacao.com",
+        corpo: "Bloqueamos sua conta por segurança. Para desbloquear, confirme seus dados no link abaixo. Tempo limite: 6 horas.",
+        data: "Hoje, 14:30",
+        golpe: true,
+        explicacao: "PayPal nunca usa domínios diferentes de paypal.com. URLs com hífen são suspeitas."
+    },
+    {
+        assunto: "Recibo de pagamento pendente - R$ 1.299,90",
+        remetente: "cobranca@netflix-suporte.com",
+        corpo: "Seu pagamento da Netflix foi recusado. Para evitar cancelamento, atualize seu cartão clicando aqui.",
+        data: "Hoje, 16:45",
+        golpe: true,
+        explicacao: "Netflix usa apenas @netflix.com. Domínios com -suporte são falsos."
+    },
+    {
+        assunto: "Seu reembolso de R$ 750,00 está disponível",
+        remetente: "reembolso@receita-federal.org",
+        corpo: "Você tem um reembolso de imposto de renda aguardando. Acesse o link para solicitar o depósito.",
+        data: "Ontem, 10:20",
+        golpe: true,
+        explicacao: "Receita Federal usa apenas .gov.br. Domínios .org para governo são falsos."
+    },
+    {
+        assunto: "Confirmação de compra não autorizada - R$ 2.450,00",
+        remetente: "fraude@alerta-mastercard.com",
+        corpo: "Detectamos compra suspeita no valor de R$ 2.450,00. Se não foi você, cancele clicando aqui.",
+        data: "Hoje, 03:15",
+        golpe: true,
+        explicacao: "Mastercard não usa domínios com hífen. Empresas sérias têm domínios simples."
+    },
+    {
+        assunto: "Atualização necessária: Política de Privacidade do WhatsApp",
+        remetente: "whatsapp@atualizacao-privacidade.com",
+        corpo: "Você deve aceitar os novos termos até amanhã ou perderá acesso ao WhatsApp. Clique para aceitar.",
+        data: "Hoje, 08:05",
+        golpe: true,
+        explicacao: "WhatsApp não envia emails sobre atualizações. Domínios longos são suspeitos."
+    },
+    {
+        assunto: "Pré-aprovação de empréstimo - R$ 15.000,00",
+        remetente: "credito@banco-digital24h.com",
+        corpo: "Parabéns! Você foi pré-aprovado para empréstimo de R$ 15.000,00. Taxa especial: 1,5% ao mês.",
+        data: "Hoje, 12:30",
+        golpe: true,
+        explicacao: "Bancos legítimos não oferecem taxas tão baixas por email não solicitado."
+    },
+    
+    // VERDADEIROS (7 opções)
+    {
+        assunto: "Confirmação de Compra - Nota Fiscal Eletrônica #321654",
+        remetente: "nfe@amazon.com.br",
+        corpo: "Prezado cliente, sua compra foi confirmada. Acesse sua conta para detalhes do pedido e acompanhamento da entrega. Valor: R$ 349,90. Forma de pagamento: Cartão final 4321.",
+        data: "15 nov 2024, 14:30",
+        golpe: false,
+        explicacao: "Email legítimo de confirmação de compra com remetente oficial da Amazon (.com.br)."
+    },
+    {
+        assunto: "Recibo de Pagamento - FATURA #987654",
+        remetente: "cobranca@itau.com.br",
+        corpo: "Recebemos seu pagamento de R$ 1.245,67 referente à fatura de novembro/2024. Comprovante disponível em sua conta digital.",
+        data: "10 nov 2024, 08:45",
+        golpe: false,
+        explicacao: "Email legítimo de confirmação de pagamento com remetente oficial do Itaú."
+    },
+    {
+        assunto: "Atualização dos Termos de Serviço do Google",
+        remetente: "google-noreply@google.com",
+        corpo: "Estamos atualizando nossos Termos de Serviço. As alterações entrarão em vigor em 1º de janeiro de 2025. Reveja as mudanças em nossa Central de Ajuda.",
+        data: "14 nov 2024, 16:10",
+        golpe: false,
+        explicacao: "Email legítimo do Google com remetente oficial e informação de atualização de serviço."
+    },
+    {
+        assunto: "Boas-vindas ao LinkedIn Premium",
+        remetente: "member@linkedin.com",
+        corpo: "Bem-vindo ao LinkedIn Premium! Sua assinatura foi ativada. Acesse seu perfil para explorar todos os recursos.",
+        data: "13 nov 2024, 09:20",
+        golpe: false,
+        explicacao: "Email legítimo do LinkedIn com remetente oficial (@linkedin.com)."
+    },
+    {
+        assunto: "Confirmação de Viagem - #RES789012",
+        remetente: "nao-responda@latam.com",
+        corpo: "Sua reserva para o voo JJ1234 (GRU → GIG) em 20/11/2024 foi confirmada. Check-in online disponível 48h antes.",
+        data: "12 nov 2024, 19:15",
+        golpe: false,
+        explicacao: "Email legítimo de companhia aérea com dados específicos da reserva."
+    },
+    {
+        assunto: "Extrato Bancário - Outubro/2024",
+        remetente: "comunicacao@nubank.com.br",
+        corpo: "Seu extrato de outubro/2024 está disponível. Acesse o app do Nubank para visualizar ou baixar o PDF.",
+        data: "01 nov 2024, 00:05",
+        golpe: false,
+        explicacao: "Email legítimo do Nubank com remetente oficial e informação sobre extrato."
+    },
+    {
+        assunto: "Renovação de Domínio - seu-site.com.br",
+        remetente: "noreply@registro.br",
+        corpo: "O domínio seu-site.com.br vencerá em 30 dias. Para manter ativo, renove até 15/12/2024.",
+        data: "10 nov 2024, 11:00",
+        golpe: false,
+        explicacao: "Email legítimo do Registro.br (órgão oficial de domínios brasileiros)."
+    }
+];
+
+let emails = [];
+let emailIndex = 0;
+const TOTAL_PERGUNTAS_F2 = 5;
+
+function iniciarGmail() {
+    emails = [...emailsGmail].sort(() => Math.random() - 0.5).slice(0, TOTAL_PERGUNTAS_F2);
+    emailIndex = 0;
+    fase2Acertos = 0;
+    carregarEmail();
+}
+
+function carregarEmail() {
+    if (emailIndex >= emails.length) {
+        document.getElementById('btnNextF2').style.display = 'block';
+        return;
+    }
+    
+    const e = emails[emailIndex];
+    const box = document.getElementById("gmailBox");
+    box.innerHTML = `
+        <div class="gmail-email">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <strong style="font-size: 18px;">${e.assunto}</strong>
+                <span style="color: #5f6368; font-size: 12px;">${e.data}</span>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <strong>De:</strong> ${e.remetente}<br>
+                <strong>Para:</strong> você
+            </div>
+            <div style="border-top: 1px solid #e0e0e0; padding-top: 15px; line-height: 1.6;">
+                ${e.corpo}
+            </div>
+        </div>
+    `;
+    document.getElementById('feedbackEmail').textContent = '';
+    document.getElementById('feedbackEmail').className = 'feedback';
+    
+    // Atualiza progresso
+    atualizarProgresso(2, emailIndex + 1, TOTAL_PERGUNTAS_F2);
+}
+
+function verificarEmail(resposta) {
+    const e = emails[emailIndex];
+    const feedback = document.getElementById('feedbackEmail');
+    
+    if (resposta === e.golpe) {
+        feedback.textContent = "✔ Correto! " + e.explicacao;
+        feedback.className = "feedback correct";
+        fase2Acertos++;
+    } else {
+        feedback.textContent = "✘ Incorreto! " + e.explicacao;
+        feedback.className = "feedback wrong";
+    }
+    
+    emailIndex++;
+    
+    if (emailIndex < emails.length) {
+        setTimeout(carregarEmail, 2000);
+    } else {
+        setTimeout(() => {
+            document.getElementById('btnNextF2').style.display = 'block';
+        }, 2000);
+    }
+}
+
+document.getElementById('btnNextF2').onclick = () => {
+    document.getElementById("fase2").style.display = "none";
+    document.getElementById("fase3").style.display = "flex";
+    iniciarFacebook();
+};
+
+// -------------------- FASE 3: Facebook (16 opções, 5 sorteadas) --------------------
+const postsFacebook = [
+    // GOLPES (9 opções)
+    {
+        texto: "🚨 ALERTA IMPORTANTE: WhatsApp vai começar a cobrar mensalidade de R$ 4,99 a partir de janeiro! Compartilhe para avisar seus contatos!",
+        link: "tecnologia-verdade.com/noticia-urgente",
+        remetente: "Tecnologia Verdade",
+        patrocinado: false,
+        imagem: "https://images.unsplash.com/photo-1614680376573-df3480f0c6ff?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Fake news com título alarmista. WhatsApp é gratuito e permanecerá gratuito."
+    },
+    {
+        texto: "🔥 PROMOÇÃO RELÂMPAGO: iPhone 15 por apenas R$ 1.999! Últimas unidades, corre que acaba!",
+        link: "ofertas-express.shop/iphone-promocao",
+        remetente: "Ofertas Express",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Golpe comum com preço irreal para produto Apple. Site com domínio .shop suspeito."
+    },
+    {
+        texto: "CURAS PROIBIDAS: Médicos escondem este remédio natural que cura diabetes em 30 dias!",
+        link: "saude-revelada.info/curas-proibidas",
+        remetente: "Saúde Revelada",
+        patrocinado: false,
+        imagem: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Fake news médica com promessas milagrosas. Domínios .info são comuns em desinformação."
+    },
+    {
+        texto: "Ganhe R$ 2.000 por semana trabalhando de casa! Método simples, sem experiência necessária.",
+        link: "trabalho-online-rapido.com",
+        remetente: "Emprego Digital",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Golpe de trabalho em casa com ganhos irreais. Cuidado com promessas exageradas."
+    },
+    {
+        texto: "BANCO CENTRAL VAI CANCELAR TODAS AS DÍVIDAS! Compartilhe esta notícia urgente!",
+        link: "noticias-urgentes24h.net",
+        remetente: "Notícias Urgentes",
+        patrocinado: false,
+        imagem: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Fake news financeira com título sensacionalista. Banco Central nunca faria isso."
+    },
+    {
+        texto: "Teste de personalidade VIRAL: Descubra qual bilionário você seria!",
+        link: "quiz-facebook-viral.biz",
+        remetente: "Quiz Divertido",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Golpe para coletar dados através de quiz manipulado. Domínios .biz suspeitos."
+    },
+    {
+        texto: "INVESTIMENTO GARANTIDO: Retorno de 300% em 3 meses! Cadastre-se agora.",
+        link: "investimentos-milionarios.top",
+        remetente: "Investimentos Rápidos",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Golpe financeiro com promessas irreais. Retornos altos em pouco tempo são sempre suspeitos."
+    },
+    {
+        texto: "Governo libera R$ 6.000 para mães solteiras! Clique para solicitar.",
+        link: "beneficios-governo.online",
+        remetente: "Benefícios Sociais",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Golpe de benefício falso. Governo nunca anuncia benefícios por redes sociais."
+    },
+    {
+        texto: "⚠️ PERIGO: Vacina da COVID causa autismo em crianças, diz estudo!",
+        link: "ciencia-verdadeira.site",
+        remetente: "Ciência Verdadeira",
+        patrocinado: false,
+        imagem: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=620&h=400&fit=crop&auto=format",
+        golpe: true,
+        explicacao: "Fake news perigosa sobre vacinas. Informações médicas devem vir de fontes oficiais."
+    },
+    
+    // VERDADEIROS (7 opções)
+    {
+        texto: "Audi apresenta o novo Q5 2025 com tecnologia híbrida e autonomia de 800km. Agende seu test drive!",
+        link: "audi.com.br/novo-q5",
+        remetente: "Audi Brasil",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=620&h=400&fit=crop&auto=format",
+        golpe: false,
+        explicacao: "Anúncio legítimo patrocinado com link para site oficial da Audi."
+    },
+    {
+        texto: "Conheça os novos recursos do Instagram Reels 2025. Agora com edição profissional integrada!",
+        link: "about.instagram.com/blog",
+        remetente: "Instagram",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=620&h=400&fit=crop&auto=format",
+        golpe: false,
+        explicacao: "Post legítimo do Instagram anunciando novas funcionalidades."
+    },
+    {
+        texto: "⚠️ CUIDADO com este golpe: Pessoas estão recebendo ligações fingindo ser da Receita Federal. Nunca passe dados por telefone!",
+        link: "policia-federal.gov.br/alertas",
+        remetente: "Polícia Federal",
+        patrocinado: false,
+        imagem: "https://images.unsplash.com/photo-1589652717521-10c0d092dea9?w=620&h=400&fit=crop&auto=format",
+        golpe: false,
+        explicacao: "Alerta legítimo de órgão oficial sobre golpes conhecidos."
+    },
+    {
+        texto: "Campanha do Agasalho 2024: Doe cobertores e ajude quem precisa neste inverno.",
+        link: "cruzvermelha.org.br/agasalho",
+        remetente: "Cruz Vermelha Brasileira",
+        patrocinado: false,
+        imagem: "https://images.unsplash.com/photo-1529390079861-591de354faf5?w=620&h=400&fit=crop&auto=format",
+        golpe: false,
+        explicacao: "Campanha legítima de instituição reconhecida com link oficial."
+    },
+    {
+        texto: "Microsoft anuncia o novo Windows 12 com IA integrada. Pré-venda começa em dezembro.",
+        link: "microsoft.com/windows12",
+        remetente: "Microsoft Brasil",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=620&h=400&fit=crop&auto=format",
+        golpe: false,
+        explicacao: "Anúncio oficial da Microsoft com link para site da empresa."
+    },
+    {
+        texto: "Inscrições abertas para o ENEM 2024! Prazo vai até 26 de novembro.",
+        link: "gov.br/inep/enem",
+        remetente: "INEP - ENEM",
+        patrocinado: false,
+        imagem: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=620&h=400&fit=crop&auto=format",
+        golpe: false,
+        explicacao: "Informação oficial do governo sobre o ENEM com link .gov.br."
+    },
+    {
+        texto: "Nova temporada de Stranger Things na Netflix em 2025! Trailer oficial liberado.",
+        link: "netflix.com/strangerthings",
+        remetente: "Netflix Brasil",
+        patrocinado: true,
+        imagem: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=620&h=400&fit=crop&auto=format",
+        golpe: false,
+        explicacao: "Anúncio legítimo da Netflix sobre nova temporada de série."
+    }
+];
+
+let fbPosts = [];
+let fbIndex = 0;
+const TOTAL_PERGUNTAS_F3 = 5;
+
+function iniciarFacebook() {
+    fbPosts = [...postsFacebook].sort(() => Math.random() - 0.5).slice(0, TOTAL_PERGUNTAS_F3);
+    fbIndex = 0;
+    fase3Acertos = 0;
+    carregarFB();
+}
+
+function carregarFB() {
+    if (fbIndex >= fbPosts.length) {
+        document.getElementById('btnNextF3').style.display = 'block';
+        return;
+    }
+    
+    const fb = fbPosts[fbIndex];
+    const box = document.getElementById("fbBox");
+    box.innerHTML = `
+        <div class="fb-post">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:#4267B2;color:#fff;text-align:center;line-height:40px;font-weight:bold;font-size:18px;">${fb.remetente.charAt(0)}</div>
+                <div>
+                    <strong>${fb.remetente}</strong><br>
+                    <small style="color:gray;">${fb.patrocinado ? 'Patrocinado · ' : ''}🌐 · 2h</small>
+                </div>
+            </div>
+            <p style="font-size:16px; margin-bottom:10px; line-height:1.4;">${fb.texto}</p>
+            <img src="${fb.imagem}" alt="Imagem" style="width:100%; height:200px; object-fit:cover; border-radius:10px; margin-bottom:10px;">
+            <div style="color:#65676B; font-size:14px; margin-bottom: 8px; display: flex; align-items: center; gap: 5px;">
+                🔗 ${fb.link}
+            </div>
+            <div style="border-top: 1px solid #ddd; padding-top: 10px; color: #65676B; font-size: 14px;">
+                👍 ${Math.floor(Math.random() * 500) + 100} · 💬 ${Math.floor(Math.random() * 50) + 5} · 🔄 ${Math.floor(Math.random() * 30) + 3}
+            </div>
+        </div>
+    `;
+    document.getElementById('feedbackFB').textContent = '';
+    document.getElementById('feedbackFB').className = 'feedback';
+    
+    // Atualiza progresso
+    atualizarProgresso(3, fbIndex + 1, TOTAL_PERGUNTAS_F3);
+}
+
+function verificarFB(resposta) {
+    const fb = fbPosts[fbIndex];
+    const feedback = document.getElementById('feedbackFB');
+    
+    if (resposta === fb.golpe) {
+        feedback.textContent = "✔ Correto! " + fb.explicacao;
+        feedback.className = "feedback correct";
+        fase3Acertos++;
+    } else {
+        feedback.textContent = "✘ Incorreto! " + fb.explicacao;
+        feedback.className = "feedback wrong";
+    }
+    
+    fbIndex++;
+    
+    if (fbIndex < fbPosts.length) {
+        setTimeout(carregarFB, 2000);
+    } else {
+        setTimeout(() => {
+            document.getElementById('btnNextF3').style.display = 'block';
+        }, 2000);
+    }
+}
+
+document.getElementById('btnNextF3').onclick = () => {
+    document.getElementById("fase3").style.display = "none";
+    document.getElementById("fase4").style.display = "flex";
+    iniciarSMS();
+};
+
+// -------------------- FASE 4: SMS (18 opções, 5 sorteadas) --------------------
+const mensagensSMS = [
+    // GOLPES (10 opções)
+    {
+        texto: "Nubank: acesso suspeito detectado. Para sua segurança, acesse nubank-verificacao.com e confirme sua identidade.",
+        golpe: true,
+        explicacao: "Golpe: Nubank nunca usa domínios diferentes de nubank.com.br. URLs suspeitas com hífen são comuns em golpes."
+    },
+    {
+        texto: "Parabéns! Você ganhou R$ 1.000 em compras no Carrefour. Resgate em: carrefour-premios.online válido por 24h.",
+        golpe: true,
+        explicacao: "Golpe: Promoções falsas com urgência artificial. Empresas sérias não usam domínios .online para promoções."
+    },
+    {
+        texto: "Suspeitamos de fraude na sua conta Apple. Ligue IMEDIATAMENTE para 0800-123-4567 ou acesse apple-seguranca.info",
+        golpe: true,
+        explicacao: "Golpe: Empresas como Apple não usam domínios .info para suporte. Lembre-se: quem liga primeiro é o golpista."
+    },
+    {
+        texto: "URGENTE: Seu iFood foi hackeado! Bloqueie agora: ifood-seguranca.net",
+        golpe: true,
+        explicacao: "Golpe: iFood não envia SMS sobre hackeamento. Domínios .net são suspeitos para empresas brasileiras."
+    },
+    {
+        texto: "Sua conta Google será excluída em 12h. Evite em: google-salvar-conta.site",
+        golpe: true,
+        explicacao: "Golpe: Google nunca ameaça excluir contas por SMS. Domínios .site são muito suspeitos."
+    },
+    {
+        texto: "Você tem PIX não recebido de R$ 850,00. Resgate em: pix-caixa-economica.com",
+        golpe: true,
+        explicacao: "Golpe: Caixa Econômica usa apenas caixa.gov.br. Domínios .com imitando bancos são golpes."
+    },
+    {
+        texto: "ALERTA: Seu CPF será cancelado por irregularidades. Regularize em: cpf-servicos.gov.com",
+        golpe: true,
+        explicacao: "Golpe: Serviços governamentais usam apenas .gov.br. .gov.com não existe no Brasil."
+    },
+    {
+        texto: "Netflix: pagamento recusado. Para evitar cancelamento: netflix-atualizar-pagamento.com",
+        golpe: true,
+        explicacao: "Golpe: Netflix usa apenas netflix.com. Domínios longos com hífens são falsos."
+    },
+    {
+        texto: "Instagram: sua conta foi reportada. Evite bloqueio: instagram-confirmar-identidade.biz",
+        golpe: true,
+        explicacao: "Golpe: Instagram não usa SMS para alertas de conta. Domínios .biz são comerciais, não de redes sociais."
+    },
+    {
+        texto: "BB: cartão clonado. Bloqueie imediatamente: banco-brasil-seguranca.net",
+        golpe: true,
+        explicacao: "Golpe: Banco do Brasil nunca envia links por SMS. Use apenas o app oficial."
+    },
+    
+    // VERDADEIROS (8 opções)
+    {
+        texto: "Sua encomenda dos Correios chegará hoje entre 14h e 18h. Código de rastreio: AB987654321BR. Acompanhe: m.correios.com.br",
+        golpe: false,
+        explicacao: "SMS legítimo dos Correios com código de rastreio real e link para site oficial móvel."
+    },
+    {
+        texto: "SUS: Sua vacinação está atrasada. Agende no posto de saúde mais próximo. Mais informações: gov.br/saude",
+        golpe: false,
+        explicacao: "SMS legítimo do governo com informação de saúde e link para site oficial (.gov.br)."
+    },
+    {
+        texto: "iFood: Seu pedido #789012 foi entregue. Avalie sua experiência: ifood.com.br/avaliar",
+        golpe: false,
+        explicacao: "SMS legítimo do iFood após entrega, com link para site oficial."
+    },
+    {
+        texto: "Uber: Sua corrida com João chegou ao destino. Valor: R$ 24,50 pago com cartão final 1234.",
+        golpe: false,
+        explicacao: "SMS legítimo do Uber com informações específicas da corrida, sem link suspeito."
+    },
+    {
+        texto: "Nubank: Compra de R$ 89,90 aprovada no Mercado Livre. Cartão final 5678. Dúvidas: app.nubank.com.br",
+        golpe: false,
+        explicacao: "SMS legítimo do Nubank com transação específica e link para app oficial."
+    },
+    {
+        texto: "Claro: Sua fatura de R$ 129,90 vence em 10/11. Para pagar: claro.com.br/minhaconta",
+        golpe: false,
+        explicacao: "SMS legítimo da operadora com valor específico e link oficial."
+    },
+    {
+        texto: "Magazine Luiza: Seu pedido #456789 foi postado. Rastreie: magazineluiza.com.br/rastrear",
+        golpe: false,
+        explicacao: "SMS legítimo de e-commerce com número de pedido e link oficial."
+    },
+    {
+        texto: "Itaú: Pix de R$ 150,00 recebido de Maria Silva. Saldo atual: R$ 2.345,67.",
+        golpe: false,
+        explicacao: "SMS legítimo do banco com transação específica, sem link para clicar."
+    }
+];
+
+let smsMsgs = [];
+let smsIndex = 0;
+const TOTAL_PERGUNTAS_F4 = 5;
+
+function iniciarSMS() {
+    smsMsgs = [...mensagensSMS].sort(() => Math.random() - 0.5).slice(0, TOTAL_PERGUNTAS_F4);
+    smsIndex = 0;
+    fase4Acertos = 0;
+    mostrarSMS();
+}
+
+function mostrarSMS() {
+    if (smsIndex >= smsMsgs.length) {
+        document.getElementById('btnNextF4').style.display = 'block';
+        return;
+    }
+    
+    const sms = smsMsgs[smsIndex];
+    const box = document.getElementById("smsBox");
+    box.innerHTML = '';
+    
+    // Data
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'sms-date';
+    dateDiv.textContent = 'Hoje';
+    box.appendChild(dateDiv);
+    
+    // Mensagem recebida
+    const smsDiv = document.createElement('div');
+    smsDiv.className = 'sms-message sms-received';
+    smsDiv.innerHTML = `
+        <div>${sms.texto}</div>
+        <div class="sms-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+    `;
+    box.appendChild(smsDiv);
+    
+    box.scrollTop = box.scrollHeight;
+    document.getElementById('feedbackSMS').textContent = '';
+    document.getElementById('feedbackSMS').className = 'feedback';
+    
+    // Atualiza progresso
+    atualizarProgresso(4, smsIndex + 1, TOTAL_PERGUNTAS_F4);
+}
+
+function verificarSMS(resposta) {
+    const sms = smsMsgs[smsIndex];
+    const feedback = document.getElementById('feedbackSMS');
+    const box = document.getElementById("smsBox");
+    
+    // Resposta do usuário
+    const respostaDiv = document.createElement('div');
+    respostaDiv.className = 'sms-message sms-sent';
+    respostaDiv.innerHTML = `
+        <div>${resposta ? "⚠️ Golpe" : "✅ Verdadeiro"}</div>
+        <div class="sms-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+    `;
+    box.appendChild(respostaDiv);
+    box.scrollTop = box.scrollHeight;
+    
+    if (resposta === sms.golpe) {
+        feedback.textContent = "✔ Correto! " + sms.explicacao;
+        feedback.className = "feedback correct";
+        fase4Acertos++;
+    } else {
+        feedback.textContent = "✘ Incorreto! " + sms.explicacao;
+        feedback.className = "feedback wrong";
+    }
+    
+    smsIndex++;
+    
+    if (smsIndex < smsMsgs.length) {
+        setTimeout(mostrarSMS, 2000);
+    } else {
+        setTimeout(() => {
+            document.getElementById('btnNextF4').style.display = 'block';
+        }, 2000);
+    }
+}
+
+document.getElementById('btnNextF4').onclick = () => {
+    document.getElementById("fase4").style.display = "none";
+    mostrarResultadosFinais();
+};
+
+// -------------------- RESULTADOS FINAIS --------------------
+function mostrarResultadosFinais() {
+    const totalPerguntas = TOTAL_PERGUNTAS_F1 + TOTAL_PERGUNTAS_F2 + TOTAL_PERGUNTAS_F3 + TOTAL_PERGUNTAS_F4;
+    const acertosTotais = fase1Acertos + fase2Acertos + fase3Acertos + fase4Acertos;
+    const porcentagem = Math.round((acertosTotais / totalPerguntas) * 100);
+    
+    // Agora sim, mostra a tela de resultados
+    document.getElementById("resultFinal").style.display = "flex";
+    
+    const content = document.getElementById("resultContent");
+    
+    let nivel = "";
+    let mensagem = "";
+    
+    if (porcentagem >= 90) {
+        nivel = "👑 Expert em Segurança Digital";
+        mensagem = "Excelente! Você demonstra conhecimento avançado em identificar golpes digitais.";
+    } else if (porcentagem >= 70) {
+        nivel = "🛡️ Usuário Consciente";
+        mensagem = "Muito bom! Você está bem informado, mas ainda pode melhorar em alguns aspectos.";
+    } else if (porcentagem >= 50) {
+        nivel = "🎓 Aprendiz Atento";
+        mensagem = "Bom começo! Continue aprendendo sobre segurança digital para se proteger melhor.";
+    } else {
+        nivel = "📚 Iniciante Cuidadoso";
+        mensagem = "Fique atento! É importante aprender mais sobre golpes digitais para se proteger.";
+    }
+    
+    content.innerHTML = `
+        <div style="text-align: center; padding: 20px;">
+            <div class="score-circle">
+                <div class="score-inner">
+                    <div class="score-main">${porcentagem}%</div>
+                    <div class="score-total">${acertosTotais}/${totalPerguntas}</div>
+                </div>
+            </div>
+            
+            <h2 style="color: #4CAF50; margin-bottom: 10px;">${nivel}</h2>
+            <p style="color: #666; margin-bottom: 25px;">${mensagem}</p>
+            
+            <div class="result-stats">
+                <div class="stat-box">
+                    <div class="stat-value">${fase1Acertos}/${TOTAL_PERGUNTAS_F1}</div>
+                    <div class="stat-label">WhatsApp</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${fase2Acertos}/${TOTAL_PERGUNTAS_F2}</div>
+                    <div class="stat-label">Email</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${fase3Acertos}/${TOTAL_PERGUNTAS_F3}</div>
+                    <div class="stat-label">Facebook</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${fase4Acertos}/${TOTAL_PERGUNTAS_F4}</div>
+                    <div class="stat-label">SMS</div>
+                </div>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin-top: 20px; text-align: left;">
+                <h4 style="color: #2e7d32; margin-top: 0;">📋 Dicas de Segurança:</h4>
+                <ul style="color: #555; padding-left: 20px; margin-bottom: 0;">
+                    <li>Sempre verifique o domínio do site (evite .online, .site, .biz, .info)</li>
+                    <li>Nunca clique em links de mensagens não solicitadas</li>
+                    <li>Bancos e órgãos oficiais nunca pedem senhas por mensagem</li>
+                    <li>Desconfie de promoções com preços irrealistas</li>
+                    <li>Quando em dúvida, entre em contato pelos canais oficiais</li>
+                </ul>
+            </div>
+            
+            <div style="margin-top: 25px; color: #777; font-size: 14px;">
+                <p>Compartilhe esse conhecimento com amigos e familiares!</p>
+            </div>
+        </div>
+    `;
+}
+
+function reiniciarJogo() {
+    location.reload();
+}
+
+// -------------------- INICIAR JOGO --------------------
+// Iniciar com a fase 1 apenas
+document.addEventListener('DOMContentLoaded', function() {
+    // Esconde todas as fases primeiro
+    document.getElementById("fase1").style.display = "none";
+    document.getElementById("fase2").style.display = "none";
+    document.getElementById("fase3").style.display = "none";
+    document.getElementById("fase4").style.display = "none";
+    document.getElementById("resultFinal").style.display = "none";
+    
+    // Mostra apenas a fase 1
+    document.getElementById("fase1").style.display = "flex";
+    iniciarWhatsApp();
+});
+</script>
+
+</body>
+</html>
