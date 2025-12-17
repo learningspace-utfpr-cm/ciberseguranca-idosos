@@ -52,6 +52,6 @@ Seu propósito é garantir que os participantes compreendam os conceitos básico
 [Plano de Aula](https://github.com/guilhermefogacadev/objetos-aprendizagem/blob/main/plano_aula_ciberseguranca_idosos.html)
 
 ## Acesso
-Para o simples acesso via web :[Simulador Iterativo](https://ciberseguranca-idosos.vercel.app)
+Para o simples acesso via web : [Simulador Interativo](https://ciberseguranca-idosos.vercel.app)
 
 
