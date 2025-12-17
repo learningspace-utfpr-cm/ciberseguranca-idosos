@@ -1,0 +1,283 @@
+{
+  "lom": {
+    "general": {
+      "identifier": {
+        "catalog": "GitHub",
+        "entry": "learningspace-utfpr-cm/ciberseguranca-idosos/simulador-golpes"
+      },
+      "title": {
+        "string": "Simulador Interativo de Identificação de Golpes Digitais",
+        "language": "pt-BR"
+      },
+      "language": ["pt-BR"],
+      "description": {
+        "string": "Simulador interativo desenvolvido como objeto de aprendizagem para ensinar idosos a identificar golpes digitais em diferentes plataformas. O objeto apresenta 4 fases (WhatsApp, Email, Facebook, SMS) com mensagens reais e golpes, totalizando 69 exemplos. O usuário classifica cada mensagem como 'Golpe' ou 'Verdadeira' e recebe feedback imediato com explicações detalhadas sobre sinais de alerta, domínios suspeitos e técnicas de engenharia social.",
+        "language": "pt-BR"
+      },
+      "keyword": [
+        { "string": "cibersegurança", "language": "pt-BR" },
+        { "string": "idosos", "language": "pt-BR" },
+        { "string": "golpes digitais", "language": "pt-BR" },
+        { "string": "phishing", "language": "pt-BR" },
+        { "string": "engenharia social", "language": "pt-BR" },
+        { "string": "WhatsApp", "language": "pt-BR" },
+        { "string": "email", "language": "pt-BR" },
+        { "string": "Facebook", "language": "pt-BR" },
+        { "string": "SMS", "language": "pt-BR" },
+        { "string": "simulação interativa", "language": "pt-BR" },
+        { "string": "prevenção a fraudes", "language": "pt-BR" },
+        { "string": "segurança digital", "language": "pt-BR" }
+      ],
+      "coverage": {
+        "string": "Identificação de golpes digitais para pessoas da terceira idade",
+        "language": "pt-BR"
+      },
+      "structure": {
+        "source": "LOMv1.0",
+        "value": "atomic"
+      },
+      "aggregationLevel": {
+        "source": "LOMv1.0",
+        "value": "2"
+      }
+    },
+    "lifeCycle": {
+      "version": {
+        "string": "1.0.0",
+        "language": "pt-BR"
+      },
+      "status": {
+        "source": "LOMv1.0",
+        "value": "final"
+      },
+      "contribute": [
+        {
+          "role": {
+            "source": "LOMv1.0",
+            "value": "author"
+          },
+          "entity": ["Equipe de Desenvolvimento"],
+          "date": {
+            "dateTime": "2025-12-17"
+          }
+        }
+      ]
+    },
+    "metaMetadata": {
+      "identifier": {
+        "catalog": "GitHub",
+        "entry": "learningspace-utfpr-cm/ciberseguranca-idosos/metadata.json"
+      },
+      "contribute": [
+        {
+          "role": {
+            "source": "LOMv1.0",
+            "value": "creator"
+          },
+          "entity": ["Equipe de Desenvolvimento"],
+          "date": {
+            "dateTime": "2025-12-17"
+          }
+        }
+      ],
+      "metadataSchema": ["LOMv1.0"],
+      "language": "pt-BR"
+    },
+    "technical": {
+      "format": ["text/html", "application/javascript", "text/css"],
+      "size": "15000",
+      "location": "https://github.com/learningspace-utfpr-cm/ciberseguranca-idosos",
+      "requirement": [
+        {
+          "orComposite": [
+            {
+              "type": {
+                "source": "LOMv1.0",
+                "value": "browser"
+              },
+              "name": {
+                "source": "LOMv1.0",
+                "value": "any"
+              },
+              "minimumVersion": "Navegador moderno com suporte a HTML5 e CSS3"
+            }
+          ]
+        }
+      ],
+      "installationRemarks": {
+        "string": "Arquivo HTML independente - basta abrir no navegador. Não requer instalação de dependências.",
+        "language": "pt-BR"
+      },
+      "otherPlatformRequirements": {
+        "string": "Conexão com internet opcional (para imagens de Unsplash). Funciona offline após carregamento inicial.",
+        "language": "pt-BR"
+      }
+    },
+    "educational": {
+      "interactivityType": {
+        "source": "LOMv1.0",
+        "value": "active"
+      },
+      "learningResourceType": [
+        {
+          "source": "LOMv1.0",
+          "value": "simulation"
+        },
+        {
+          "source": "LOMv1.0",
+          "value": "exercise"
+        },
+        {
+          "source": "LOMv1.0",
+          "value": "self assessment"
+        }
+      ],
+      "interactivityLevel": {
+        "source": "LOMv1.0",
+        "value": "very high"
+      },
+      "semanticDensity": {
+        "source": "LOMv1.0",
+        "value": "medium"
+      },
+      "intendedEndUserRole": [
+        {
+          "source": "LOMv1.0",
+          "value": "learner"
+        }
+      ],
+      "context": [
+        {
+          "source": "LOMv1.0",
+          "value": "training"
+        },
+        {
+          "source": "LOMv1.0",
+          "value": "informal education"
+        },
+        {
+          "source": "LOMv1.0",
+          "value": "community education"
+        }
+      ],
+      "typicalAgeRange": {
+        "string": "60+",
+        "language": "pt-BR"
+      },
+      "difficulty": {
+        "source": "LOMv1.0",
+        "value": "medium"
+      },
+      "typicalLearningTime": {
+        "duration": "PT30M"
+      },
+      "description": {
+        "string": "Simulador com 4 fases sequenciais (WhatsApp, Email, Facebook, SMS) totalizando 20 perguntas. O aprendiz identifica mensagens reais e golpes, recebendo feedback imediato com explicações sobre domínios suspeitos, sinais de urgência e técnicas de engenharia social. Ao final, recebe pontuação e classificação baseada no desempenho.",
+        "language": "pt-BR"
+      },
+      "language": ["pt-BR"]
+    },
+    "rights": {
+      "cost": {
+        "source": "LOMv1.0",
+        "value": "no"
+      },
+      "copyrightAndOtherRestrictions": {
+        "source": "LOMv1.0",
+        "value": "yes"
+      },
+      "description": {
+        "string": "Este material educativo é disponibilizado para fins educacionais e de conscientização. As imagens utilizam API do Unsplash com atribuição apropriada. O código-fonte pode ser utilizado e adaptado com atribuição.",
+        "language": "pt-BR"
+      }
+    },
+    "relation": [
+      {
+        "kind": {
+          "source": "LOMv1.0",
+          "value": "isbasedon"
+        },
+        "resource": {
+          "identifier": {
+            "catalog": "Mapa Instrucional",
+            "entry": "https://github.com/learningspace-utfpr-cm/ciberseguranca-idosos/blob/main/mapa-instrucional.xml"
+          },
+          "description": {
+            "string": "Mapa instrucional do objeto de aprendizagem sobre cibersegurança para idosos",
+            "language": "pt-BR"
+          }
+        }
+      }
+    ],
+    "annotation": [
+      {
+        "entity": "Equipe de Desenvolvimento",
+        "date": {
+          "dateTime": "2025-12-17"
+        },
+        "description": {
+          "string": "Objeto de aprendizagem desenvolvido como parte do projeto de cibersegurança para idosos. Foco em interface acessível e feedback pedagógico para público idoso.",
+          "language": "pt-BR"
+        }
+      }
+    ],
+    "classification": [
+      {
+        "purpose": {
+          "source": "LOMv1.0",
+          "value": "discipline"
+        },
+        "taxonPath": [
+          {
+            "source": {
+              "string": "Tecnologia da Informação",
+              "language": "pt-BR"
+            },
+            "taxon": [
+              {
+                "id": "1",
+                "entry": {
+                  "string": "Segurança da Informação",
+                  "language": "pt-BR"
+                }
+              },
+              {
+                "id": "1.1",
+                "entry": {
+                  "string": "Cibersegurança",
+                  "language": "pt-BR"
+                }
+              },
+              {
+                "id": "1.1.1",
+                "entry": {
+                  "string": "Prevenção a Golpes Digitais",
+                  "language": "pt-BR"
+                }
+              }
+            ]
+          }
+        ],
+        "description": {
+          "string": "Educação digital para prevenção de golpes em diferentes plataformas digitais",
+          "language": "pt-BR"
+        },
+        "keyword": [
+          { "string": "segurança digital", "language": "pt-BR" },
+          { "string": "idosos", "language": "pt-BR" },
+          { "string": "golpes", "language": "pt-BR" }
+        ]
+      },
+      {
+        "purpose": {
+          "source": "LOMv1.0",
+          "value": "educational objective"
+        },
+        "description": {
+          "string": "Desenvolver habilidades de identificação de golpes digitais em WhatsApp, Email, Facebook e SMS. Reconhecer sinais de alerta, domínios suspeitos, técnicas de engenharia social e promover práticas seguras de navegação digital.",
+          "language": "pt-BR"
+        }
+      }
+    ]
+  }
+}
