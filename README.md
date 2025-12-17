@@ -42,7 +42,9 @@ O Objeto de Aprendizagem deste repositório é um simulador interativo que repro
 
 O simulador apresenta situações realistas e fornece feedback imediato, reforçando o processo de aprendizagem por meio da prática direta.
 
-[Objeto de aprendizagem](https://github.com/guilhermefogacadev/objetos-aprendizagem/blob/main/objeto_de_aprendizagem.html)
+### Acesso
+Para acesso do objeto de aprendizagem: [Simulador Interativo](https://ciberseguranca-idosos.vercel.app)
+
 
 ## Plano de Aula
 
@@ -51,7 +53,5 @@ Seu propósito é garantir que os participantes compreendam os conceitos básico
 
 [Plano de Aula](https://github.com/guilhermefogacadev/objetos-aprendizagem/blob/main/plano_aula_ciberseguranca_idosos.html)
 
-## Acesso
-Para o simples acesso via web : [Simulador Interativo](https://ciberseguranca-idosos.vercel.app)
 
 
